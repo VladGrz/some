@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    environment {
+        API_TOKEN = credentials('7264345092:AAGCYsJ3hct1JKTnPEEbr49g5KOdiOmb1L8')
+        WEATHER_API_KEY = credentials('ae2f7888d076b6cc4794517a58cc78e4')
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/VitaliyKuz/prikm-bot-cursach.git'
+            }
+        }
+
+        stage('Build and Run Docker Container') {
+            steps {
+                script {
+                    def image = docker.build("weather-bot-image")
+                    image.run('-d -p 5000:5000 --name weather-bot-container', 
+                      "--env API_TOKEN=${API_TOKEN} --env WEATHER_API_KEY=${WEATHER_API_KEY}")
+                }
+            }
+        }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
