@@ -18,7 +18,7 @@ pipeline {
                 script {
                     def image = docker.build("weather-bot-image")
                     image.run('-d -p 5000:5000 -p 8000:8000 --name weather-bot-container', 
-                      "--env API_TOKEN=${API_TOKEN} --env WEATHER_API_KEY=${WEATHER_API_KEY}")
+                      '-e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}')
                 }
             }
         }
