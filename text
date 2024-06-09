@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram.utils.executor import Executor
+from aiogram import Router
 
 API_TOKEN = os.getenv('API_TOKEN')
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
@@ -13,11 +13,13 @@ WEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
+router = Router()
+dp.include_router(router)
 
 class WeatherStates(StatesGroup):
     waiting_for_city = State()
 
-@dp.message(Command(commands=['start', 'help']))
+@router.message(Command(commands=['start', 'help']))
 async def send_welcome(message: Message, state: FSMContext):
     await message.answer("Hi!\nI'm your Weather bot!\nSend me a city name to get the weather forecast.")
     await state.set_state(WeatherStates.waiting_for_city)
@@ -53,7 +55,7 @@ async def get_weather_data(city):
         print(e)
         return None
 
-@dp.message()
+@router.message()
 async def handle_message(message: Message, state: FSMContext):
     city = message.text.strip()
     weather_info = await get_weather_data(city)
@@ -64,8 +66,7 @@ async def handle_message(message: Message, state: FSMContext):
     await state.clear()
 
 async def main():
-    executor = Executor(dp, skip_updates=True)
-    await executor.start_polling()
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     import asyncio
