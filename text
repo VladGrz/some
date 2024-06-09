@@ -1,20 +1,28 @@
 import os
 import requests
 from aiogram import Bot, Dispatcher, types
-from aiogram.utils import executor
+from aiogram.filters import Command
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
+from aiogram.utils.executor import Executor
 
 API_TOKEN = os.getenv('API_TOKEN')
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 WEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
 
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
-    await message.reply("Hi!\nI'm your Weather bot!\nSend me a city name to get the weather forecast.")
+class WeatherStates(StatesGroup):
+    waiting_for_city = State()
 
-def get_weather_data(city):
+@dp.message(Command(commands=['start', 'help']))
+async def send_welcome(message: Message, state: FSMContext):
+    await message.answer("Hi!\nI'm your Weather bot!\nSend me a city name to get the weather forecast.")
+    await state.set_state(WeatherStates.waiting_for_city)
+
+async def get_weather_data(city):
     try:
         params = {
             'q': city,
@@ -45,14 +53,20 @@ def get_weather_data(city):
         print(e)
         return None
 
-@dp.message_handler()
-async def handle_message(message: types.Message):
+@dp.message()
+async def handle_message(message: Message, state: FSMContext):
     city = message.text.strip()
-    weather_info = get_weather_data(city)
+    weather_info = await get_weather_data(city)
     if weather_info:
-        await message.reply(weather_info)
+        await message.answer(weather_info)
     else:
-        await message.reply("Не вдалося отримати дані про погоду. Спробуйте ще раз.")
+        await message.answer("Не вдалося отримати дані про погоду. Спробуйте ще раз.")
+    await state.clear()
+
+async def main():
+    executor = Executor(dp, skip_updates=True)
+    await executor.start_polling()
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    import asyncio
+    asyncio.run(main())
