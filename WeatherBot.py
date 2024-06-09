@@ -93,14 +93,14 @@ async def handle_message(message: Message, state: FSMContext):
     await state.clear()
     STATE_TRANSITIONS.inc()
 
+
 async def main():
     # Start the Prometheus server to expose metrics
     start_http_server(8001)
+    await dp.start_polling(bot)
     while True:
         measure_resource_usage()
         await asyncio.sleep(5)
-    
-    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     import asyncio
