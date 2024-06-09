@@ -2,8 +2,8 @@ import os
 import requests
 from aiogram import Bot, Dispatcher, executor, types
 
-API_TOKEN = os.getenv('7264345092:AAGCYsJ3hct1JKTnPEEbr49g5KOdiOmb1L8')
-WEATHER_API_KEY = os.getenv('ae2f7888d076b6cc4794517a58cc78e4')
+API_TOKEN = os.getenv('API_TOKEN')
+WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 WEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
 
 bot = Bot(token=API_TOKEN)
