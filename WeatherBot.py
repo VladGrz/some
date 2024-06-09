@@ -1,6 +1,7 @@
 import os
 import requests
 from aiogram import Bot, Dispatcher, types
+from aiogram.utils import executor
 
 API_TOKEN = os.getenv('API_TOKEN')
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
@@ -52,3 +53,6 @@ async def handle_message(message: types.Message):
         await message.reply(weather_info)
     else:
         await message.reply("Не вдалося отримати дані про погоду. Спробуйте ще раз.")
+
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)
