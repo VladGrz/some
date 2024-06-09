@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/VitaliyKuz/prikm-bot-cursach.git'
+                git branch: 'main', url: 'https://github.com/VitaliyKuz/prikm-bot-cursach.git'
             }
         }
 
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     def image = docker.build("weather-bot-image")
-                    image.run('-d -p 5000:5000 --name weather-bot-container', 
+                    image.run('-d -p 5000:5000 -p 8000:8000 --name weather-bot-container', 
                       "--env API_TOKEN=${API_TOKEN} --env WEATHER_API_KEY=${WEATHER_API_KEY}")
                 }
             }
