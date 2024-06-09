@@ -34,8 +34,8 @@ pipeline {
                         fi
                     """
 
-                    // Run WeatherBot container
-                    weatherImage.run("-d -p 8000:8000 --name weather-bot-container -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}")
+                    // Run WeatherBot container with a label
+                    weatherImage.run("-d -p 8000:8000 --name weather-bot-container --label app=weather-bot -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}")
 
                     // Run Prometheus container
                     sh """
