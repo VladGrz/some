@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        API_TOKEN = credentials('7264345092:AAGCYsJ3hct1JKTnPEEbr49g5KOdiOmb1L8')
-        WEATHER_API_KEY = credentials('ae2f7888d076b6cc4794517a58cc78e4')
+        API_TOKEN = credentials('API_TOKEN')
+        WEATHER_API_KEY = credentials('WEATHER_API_KEY')
     }
 
     stages {
