@@ -1,11 +1,9 @@
 pipeline {
     agent any
-
     environment {
         API_TOKEN = credentials('API_TOKEN')
         WEATHER_API_KEY = credentials('WEATHER_API_KEY')
     }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -17,6 +15,9 @@ pipeline {
             steps {
                 script {
                     def weatherImage = docker.build("weather-bot-image")
+
+                    // Create a network if it doesn't exist
+                    sh 'docker network create weather-net || true'
 
                     // Stop and remove the existing containers if they exist
                     sh """
@@ -34,21 +35,21 @@ pipeline {
                         fi
                     """
 
-                    // Run WeatherBot container with a label
-                    weatherImage.run("-d -p 8000:8000 --name weather-bot-container --label app=weather-bot -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}")
+                    // Run WeatherBot container with a label in the weather-net network
+                    weatherImage.run("--network weather-net -d -p 8000:8000 --name weather-bot-container --label app=weather-bot -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}")
 
-                    // Run Prometheus container
+                    // Run Prometheus container in the weather-net network
                     sh """
-                        docker run -d \
+                        docker run -d --network weather-net \
                             --name prometheus \
                             -p 9090:9090 \
                             -v /home/vboxuser/prikm-bot-cursach/prometheus.yml:/etc/prometheus/prometheus.yml \
                             prom/prometheus
                     """
 
-                    // Run Grafana container
+                    // Run Grafana container in the weather-net network
                     sh """
-                        docker run -d \
+                        docker run -d --network weather-net \
                             --name grafana \
                             -p 3000:3000 \
                             grafana/grafana
