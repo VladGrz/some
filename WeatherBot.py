@@ -1,6 +1,6 @@
 import os
 import requests
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, types
 
 API_TOKEN = os.getenv('API_TOKEN')
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
