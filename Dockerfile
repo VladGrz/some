@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "WeatherBot.py.py"]
+CMD ["python", "WeatherBot.py"]
