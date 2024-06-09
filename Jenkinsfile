@@ -17,8 +17,17 @@ pipeline {
             steps {
                 script {
                     def image = docker.build("weather-bot-image")
-                    image.run('-d -p 5000:5000 -p 8000:8000 --name weather-bot-container', 
-                      '-e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}')
+                    
+                    // Зупинити та видалити існуючий контейнер, якщо він існує
+                    sh """
+                        if [ \$(docker ps -aq -f name=weather-bot-container) ]; then
+                            docker stop weather-bot-container
+                            docker rm weather-bot-container
+                        fi
+                    """
+                    
+                    // Запустити новий контейнер
+                    image.run('-d -p 5000:5000 -p 8000:8000 --name weather-bot-container -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}')
                 }
             }
         }
