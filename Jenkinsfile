@@ -56,9 +56,11 @@ pipeline {
                         docker run -d --network weather-net \
                             --name grafana \
                             -p 3000:3000 \
+                            -v /home/vboxuser/prikm-bot-cursach/provisioning:/etc/grafana/provisioning \
+                            -v /home/vboxuser/prikm-bot-cursach/dashboards:/var/lib/grafana/dashboards \
                             grafana/grafana
                     """
-                    
+
                     // Run Node Exporter container in the weather-net network
                     sh """
                         docker run -d --network weather-net \
