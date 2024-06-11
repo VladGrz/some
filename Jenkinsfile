@@ -33,6 +33,10 @@ pipeline {
                             docker stop grafana
                             docker rm grafana
                         fi
+                        if [ \$(docker ps -aq -f name=node-exporter) ]; then
+                            docker stop node-exporter
+                            docker rm node-exporter
+                        fi
                     """
 
                     // Run WeatherBot container with a label in the weather-net network
@@ -52,9 +56,15 @@ pipeline {
                         docker run -d --network weather-net \
                             --name grafana \
                             -p 3000:3000 \
-                            -v /home/vboxuser/prikm-bot-cursach/provisioning:/etc/grafana/provisioning \
-                            -v /home/vboxuser/prikm-bot-cursach/dashboards:/var/lib/grafana/dashboards \
                             grafana/grafana
+                    """
+                    
+                    // Run Node Exporter container in the weather-net network
+                    sh """
+                        docker run -d --network weather-net \
+                            --name node-exporter \
+                            -p 9100:9100 \
+                            prom/node-exporter
                     """
                 }
             }
