@@ -37,12 +37,14 @@ pipeline {
                             docker stop node-exporter
                             docker rm node-exporter
                         fi
+                        if [ \$(docker ps -aq -f name=cadvisor) ]; then
+                            docker stop cadvisor
+                            docker rm cadvisor
+                        fi
                     """
 
-                    // Run WeatherBot container with a label in the weather-net network
                     weatherImage.run("--network weather-net -d -p 8000:8000 --name weather-bot-container --label app=weather-bot -e API_TOKEN=${API_TOKEN} -e WEATHER_API_KEY=${WEATHER_API_KEY}")
 
-                    // Run Prometheus container in the weather-net network
                     sh """
                         docker run -d --network weather-net \
                             --name prometheus \
@@ -51,7 +53,7 @@ pipeline {
                             prom/prometheus
                     """
 
-                    // Run Grafana container in the weather-net network
+
                     sh """
                         docker run -d --network weather-net \
                             --name grafana \
@@ -61,12 +63,22 @@ pipeline {
                             grafana/grafana
                     """
 
-                    // Run Node Exporter container in the weather-net network
                     sh """
                         docker run -d --network weather-net \
                             --name node-exporter \
                             -p 9100:9100 \
                             prom/node-exporter
+                    """
+
+                    sh """
+                        docker run -d --network weather-net \
+                            --name cadvisor \
+                            -p 8080:8080 \
+                            -v /:/rootfs:ro \
+                            -v /var/run:/var/run:ro \
+                            -v /sys:/sys:ro \
+                            -v /var/lib/docker/:/var/lib/docker:ro \
+                            gcr.io/cadvisor/cadvisor:v0.47.0
                     """
                 }
             }
