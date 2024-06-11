@@ -11,6 +11,7 @@ pipeline {
             }
         }
 
+
         stage('Build and Run Docker Containers') {
             steps {
                 script {
@@ -53,7 +54,6 @@ pipeline {
                             prom/prometheus
                     """
 
-
                     sh """
                         docker run -d --network weather-net \
                             --name grafana \
@@ -62,6 +62,7 @@ pipeline {
                             -v /home/vboxuser/prikm-bot-cursach/dashboards:/var/lib/grafana/dashboards \
                             grafana/grafana
                     """
+
 
                     sh """
                         docker run -d --network weather-net \
@@ -73,7 +74,7 @@ pipeline {
                     sh """
                         docker run -d --network weather-net \
                             --name cadvisor \
-                            -p 8080:8080 \
+                            -p 8081:8080 \
                             -v /:/rootfs:ro \
                             -v /var/run:/var/run:ro \
                             -v /sys:/sys:ro \
