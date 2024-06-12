@@ -80,6 +80,9 @@ pipeline {
                             -v /var/lib/docker/:/var/lib/docker:ro \
                             gcr.io/cadvisor/cadvisor:v0.47.0
                     """
+                    sh """
+                        ls 
+                    """
                 }
             }
         }
