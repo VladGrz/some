@@ -48,14 +48,9 @@ pipeline {
                             prom/prometheus
                     """
 
-                    // sh """
-                    //     docker run -d --network weather-net \
-                    //         --name grafana \
-                    //         -p 3000:3000 \
-                    //         -v \$(pwd)/grafana/provisioning:/etc/grafana/provisioning \
-                    //         -v \$(pwd)/grafana/dashboards:/var/lib/grafana/dashboards \
-                    //         grafana/grafana
-                    // """
+                    sh """
+                        docker compose up
+                    """
                     sh """
                     ls; pwd; ls grafana; ls grafana/dashboards; cat grafana/dashboards/jenkins_dashboards.json
                     """
