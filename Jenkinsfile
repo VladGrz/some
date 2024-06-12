@@ -11,7 +11,6 @@ pipeline {
             }
         }
 
-
         stage('Build and Run Docker Containers') {
             steps {
                 script {
@@ -50,7 +49,7 @@ pipeline {
                         docker run -d --network weather-net \
                             --name prometheus \
                             -p 9090:9090 \
-                            -v /home/vboxuser/prikm-bot-cursach/prometheus.yml:/etc/prometheus/prometheus.yml \
+                            -v \${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml \
                             prom/prometheus
                     """
 
@@ -58,11 +57,10 @@ pipeline {
                         docker run -d --network weather-net \
                             --name grafana \
                             -p 3000:3000 \
-                            -v /home/vboxuser/prikm-bot-cursach/provisioning:/etc/grafana/provisioning \
-                            -v /home/vboxuser/prikm-bot-cursach/dashboards:/var/lib/grafana/dashboards \
+                            -v \${PWD}/provisioning:/etc/grafana/provisioning \
+                            -v \${PWD}/dashboards:/var/lib/grafana/dashboards \
                             grafana/grafana
                     """
-
 
                     sh """
                         docker run -d --network weather-net \
