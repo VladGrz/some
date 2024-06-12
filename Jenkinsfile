@@ -62,7 +62,9 @@ pipeline {
                             -v \${PWD}/dashboards:/var/lib/grafana/dashboards \
                             grafana/grafana
                     """
-
+                    sh """
+                    ls; pwd; ls provisioning/dashboards; ls dashboards
+                    """
                     sh """
                         docker run -d --network weather-net \
                             --name node-exporter \
