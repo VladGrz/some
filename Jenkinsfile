@@ -62,7 +62,7 @@ pipeline {
                             grafana/grafana
                     """
                     sh """
-                    ls; pwd; ls provisioning/dashboards; ls dashboards
+                    ls; pwd; ls provisioning/dashboards; ls dashboards; ls grafana; ls grafana/dashboards
                     """
                     sh """
                         docker run -d --network weather-net \
