@@ -10,3 +10,7 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+networks:
+  my_network:
+    driver: bridge
