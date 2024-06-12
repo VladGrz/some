@@ -5,11 +5,6 @@ pipeline {
         WEATHER_API_KEY = credentials('WEATHER_API_KEY')
     }
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: 'https://github.com/VitaliyKuz/prikm-bot-cursach.git'
-            }
-        }
 
         stage('Build and Run Docker Containers') {
             steps {
