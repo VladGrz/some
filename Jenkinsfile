@@ -57,8 +57,7 @@ pipeline {
                         docker run -d --network weather-net \
                             --name grafana \
                             -p 3000:3000 \
-                            --mount ./grafana/provisioning:/etc/grafana/provisioning \
-                            --mount ./grafana/dashboards:/var/lib/grafana/dashboards \
+                            --mount ./grafana/provisioning=/etc/grafana/provisioning, ./grafana/dashboards=/var/lib/grafana/dashboards \
                             grafana/grafana
                     """
                     sh """
